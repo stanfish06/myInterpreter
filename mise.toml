@@ -1,0 +1,18 @@
+[tools]
+go = "latest"
+
+[tasks.init]
+run = "go mod init myInterpreter"
+
+[tasks.sync]
+run = [
+	"go mod download",
+	"go mod tidy",
+	"go mod verify",
+]
+
+[tasks.check]
+run = [
+	"go list -m all",
+	"go mod why"
+]
