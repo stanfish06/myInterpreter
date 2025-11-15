@@ -1,6 +1,6 @@
 package lexer
 
-import "myInterpreter/token"
+import tk "myInterpreter/token"
 
 type Lexer struct {
 	input        string
@@ -25,29 +25,66 @@ func (l *Lexer) readChar() {
 	l.readPosition += 1
 }
 
-func (l *Lexer) NextToken() token.Token {
-	var tok token.Token
+// Todo: handle int
+func (l *Lexer) NextToken() tk.Token {
+	var tok tk.Token
+	l.skipWhitespace()
 	switch l.ch {
 	case '=':
-		tok = token.NewToken(token.ASSIGN, l.ch)
+		tok = tk.NewToken(tk.ASSIGN, l.ch)
 	case ';':
-		tok = token.NewToken(token.SEMICOLON, l.ch)
+		tok = tk.NewToken(tk.SEMICOLON, l.ch)
 	case '(':
-		tok = token.NewToken(token.LPAREN, l.ch)
+		tok = tk.NewToken(tk.LPAREN, l.ch)
 	case ')':
-		tok = token.NewToken(token.RPAREN, l.ch)
+		tok = tk.NewToken(tk.RPAREN, l.ch)
 	case ',':
-		tok = token.NewToken(token.COMMA, l.ch)
+		tok = tk.NewToken(tk.COMMA, l.ch)
 	case '+':
-		tok = token.NewToken(token.PLUS, l.ch)
+		tok = tk.NewToken(tk.PLUS, l.ch)
 	case '{':
-		tok = token.NewToken(token.LBRACE, l.ch)
+		tok = tk.NewToken(tk.LBRACE, l.ch)
 	case '}':
-		tok = token.NewToken(token.RBRACE, l.ch)
+		tok = tk.NewToken(tk.RBRACE, l.ch)
 	case 0:
 		tok.Literal = ""
-		tok.Type = token.EOF
+		tok.Type = tk.EOF
+	default:
+		if isLetter(l.ch) {
+			tok.Literal = l.readIdentifier()
+			tok.Type = tk.CheckIdent(tok.Literal)
+			return tok
+		} else {
+			tok = tk.NewToken(tk.ILLEGAL, l.ch)
+		}
 	}
 	l.readChar()
 	return tok
+}
+
+// used to read stuffs like let, fn, etc
+func (l *Lexer) readIdentifier() string {
+	// left position
+	position := l.position
+	for isLetter(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
+}
+
+// char is rune in go, and can be convert to byte
+// you can compare rune and byte
+// rune -> int32 (also include other stuffs like unicodes)
+// byte -> uint8
+func isLetter(ch byte) bool {
+	co1 := ch <= 'z' && ch >= 'a'
+	co2 := ch <= 'Z' && ch >= 'A'
+	co3 := ch == '_'
+	return co1 || co2 || co3
+}
+
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
 }
