@@ -11,14 +11,25 @@ const (
 	INT       = "INT"
 	ASSIGN    = "="
 	PLUS      = "+"
+	MINUS     = "-"
+	BANG      = "!"
+	AST       = "*"
+	SLASH     = "/"
+	LT        = "<"
+	GT        = ">"
 	COMMA     = ","
 	SEMICOLON = ";"
 	LPAREN    = "("
 	RPAREN    = ")"
 	LBRACE    = "{"
 	RBRACE    = "}"
-	FUNCTION  = "FUNCTION"
 	LET       = "LET"
+	FUNCTION  = "FUNCTION"
+	TRUE      = "TRUE"
+	FALSE     = "FALSE"
+	IF        = "IF"
+	ELSE      = "ELSE"
+	RETURN    = "RETURN"
 )
 
 type Token struct {
@@ -31,14 +42,19 @@ type Token struct {
 // a := ... works in function
 // var a = ... works everywhere
 // you can also do var a int, without assignemnt
-var lit2tkType = map[string]TokenType{
-	"let": LET,
-	"fn":  FUNCTION,
+var keywords = map[string]TokenType{
+	"let":    LET,
+	"fn":     FUNCTION,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
 }
 
 func CheckIdent(ident string) TokenType {
 	// go allows simple expression in if
-	if tkType, ok := lit2tkType[ident]; ok {
+	if tkType, ok := keywords[ident]; ok {
 		return tkType
 	}
 	return IDENT
