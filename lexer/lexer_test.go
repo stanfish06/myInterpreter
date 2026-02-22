@@ -22,6 +22,9 @@ func TestCodeSimple(t *testing.T) {
     } else {
         return false;
     }
+
+    5 == 10;
+    5 != 10;
 	`
 
 	tests := []struct {
@@ -93,7 +96,14 @@ func TestCodeSimple(t *testing.T) {
 		{token.FALSE, "false"},
 		{token.SEMICOLON, ";"},
 		{token.RBRACE, "}"},
-		{token.EOF, ""},
+		{token.INT, "5"},
+		{token.EQ, "=="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		{token.INT, "5"},
+		{token.NEQ, "!="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
 	}
 
 	l := New(input)

@@ -10,6 +10,8 @@ const (
 	IDENT     = "IDENT"
 	INT       = "INT"
 	ASSIGN    = "="
+	EQ        = "=="
+	NEQ       = "!="
 	PLUS      = "+"
 	MINUS     = "-"
 	BANG      = "!"
